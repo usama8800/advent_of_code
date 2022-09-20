@@ -3,9 +3,10 @@
 use color_eyre::eyre::Result;
 
 mod day1;
+mod day2;
 
 fn main() -> Result<()> {
     color_eyre::install()?;
 
-    day1::solve()
+    day2::solve()
 }
