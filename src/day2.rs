@@ -14,7 +14,7 @@ struct Command {
 }
 
 fn get_input() -> Result<Vec<Command>> {
-    let contents = fs::read_to_string("inputs/day2.txt")?;
+    let contents = fs::read_to_string("inputs/day2.txt").expect("");
     let splits = contents.split_terminator('\n');
 
     Ok(splits

@@ -3,7 +3,7 @@ use std::fs;
 use std::slice::Windows;
 
 fn get_input() -> Result<Vec<u32>> {
-    let contents = fs::read_to_string("inputs/day1.txt")?;
+    let contents = fs::read_to_string("inputs/day1.txt").expect("");
     let splits = contents.split_ascii_whitespace();
 
     Ok(splits.filter_map(|v| v.parse().ok()).collect())
