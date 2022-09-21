@@ -12,9 +12,7 @@ fn get_input() -> Result<Vec<u64>> {
             Some(v)
         }
     });
-
     let line = lines.next().ok_or_else(|| eyre!(""))?.split(',');
-
     Ok(line.filter_map(|v| v.parse().ok()).collect())
 }
 
