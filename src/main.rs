@@ -2,8 +2,8 @@
 
 use color_eyre::eyre::Result;
 
-mod day5;
-use day5 as day;
+mod day6;
+use day6 as day;
 
 fn main() -> Result<()> {
     color_eyre::install()?;
