@@ -4,12 +4,11 @@ use std::fs;
 #[derive(Debug)]
 struct Grid {
     map: Vec<Vec<u8>>,
-    curr_i: usize,
 }
 
 impl Grid {
     fn new(map: Vec<Vec<u8>>) -> Self {
-        Grid { curr_i: 0, map }
+        Grid { map }
     }
 
     fn iter(&self) -> GridIter<'_> {
