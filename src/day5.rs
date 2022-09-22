@@ -1,7 +1,6 @@
 use color_eyre::eyre::{eyre, Result};
 use std::collections::HashMap;
 use std::fs;
-use std::slice::Windows;
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 struct Point(i32, i32);

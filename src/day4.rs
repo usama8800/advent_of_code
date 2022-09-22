@@ -1,7 +1,6 @@
 use color_eyre::eyre::{eyre, Result};
 use std::fmt::Display;
 use std::fs;
-use std::slice::Windows;
 
 #[derive(Debug)]
 struct BingoNum {

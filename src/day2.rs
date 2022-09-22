@@ -1,6 +1,5 @@
 use color_eyre::eyre::Result;
 use std::fs;
-use std::slice::Windows;
 
 enum Direction {
     Up,

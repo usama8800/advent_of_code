@@ -1,6 +1,5 @@
 use color_eyre::eyre::{eyre, Result};
 use std::fs;
-use std::slice::Windows;
 
 fn get_input() -> Result<Vec<u32>> {
     let contents = fs::read_to_string("inputs/day7.txt").expect("");
