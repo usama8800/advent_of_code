@@ -1,5 +1,15 @@
 use color_eyre::eyre::{eyre, Result};
-use std::{collections::HashMap, fs, hash::Hash};
+use std::{collections::HashMap, fmt::Display, fs, hash::Hash};
+
+static mut DEBUG: bool = false;
+
+fn debug(s: String) {
+    unsafe {
+        if DEBUG {
+            println!("{}", s);
+        }
+    }
+}
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Copy)]
 struct Pair(char, char);
@@ -13,57 +23,65 @@ struct Polymer {
 impl Polymer {
     fn iteration(&mut self) {
         let mut inserts: Vec<(Pair, i32)> = Vec::new();
-        for (pair, ch) in self.insertions.iter() {
-            let curr = self.pairs.get(pair).map_or(0, |v| *v);
-            if curr > 0 {
-                // println!("pair   {:?} (curr   {}) - inserting {}", pair, curr, ch);
-                inserts.push((*pair, -1));
-                // println!("pair   {:?} (change {})", pair, curr - 1);
-                let new_pair1 = Pair(pair.0, *ch);
-                let new_pair2 = Pair(*ch, pair.1);
-                let curr = self.pairs.get(&new_pair1).map_or(0, |v| *v);
-                // println!("pair 1 {:?} (change {})", new_pair1, curr + 1);
-                inserts.push((new_pair1, 1));
-                let curr = self.pairs.get(&new_pair2).map_or(0, |v| *v);
-                inserts.push((new_pair2, 1));
-                // println!("pair 2 {:?} (change {})", new_pair2, curr + 1);
-            }
-        }
+
+        debug("".to_owned());
         for (pair, count) in inserts {
             let curr = self.pairs.get(&pair).map_or(0, |v| *v);
+            debug(format!("{:?} (new count  {})", pair, (curr as i32 + count)));
             self.pairs.insert(pair, (curr as i32 + count) as u32);
         }
     }
 
-    fn max_diff(&self) -> u64 {
+    fn counts(&self) -> HashMap<char, u64> {
         let mut counts: HashMap<char, u64> = HashMap::new();
         for (pair, count) in self.pairs.iter() {
-            println!("{:?} {}", pair, count);
+            // println!("{:?} {}", pair, count);
             let curr = counts.get(&pair.0).map_or(0, |f| *f);
             counts.insert(pair.0, curr + *count as u64);
-            println!(
-                "{} = {} + {} = {}",
-                pair.0,
-                count,
-                curr,
-                curr + *count as u64
-            );
+            // println!(
+            //     "{} = {} + {} = {}",
+            //     pair.0,
+            //     count,
+            //     curr,
+            //     curr + *count as u64
+            // );
             let curr = counts.get(&pair.1).map_or(0, |f| *f);
             counts.insert(pair.1, curr + *count as u64);
-            println!(
-                "{} = {} + {} = {}",
-                pair.1,
-                count,
-                curr,
-                curr + *count as u64
-            );
+            // println!(
+            //     "{} = {} + {} = {}",
+            //     pair.1,
+            //     count,
+            //     curr,
+            //     curr + *count as u64
+            // );
         }
-        let counts = counts
-            .values()
-            .map(|v| if v % 2 == 0 { v / 2 } else { v / 2 + 1 });
-        let max = counts.clone().max().unwrap();
-        let min = counts.clone().min().unwrap();
+        for (ch, count) in counts.iter_mut() {
+            *count = if *count % 2 == 0 {
+                *count / 2u64
+            } else {
+                *count / 2u64 + 1
+            };
+        }
+        counts
+    }
+
+    fn max_diff(&self) -> u64 {
+        let counts = self.counts();
+        let max = counts.values().max().unwrap();
+        let min = counts.values().min().unwrap();
         max - min
+    }
+}
+
+impl Display for Polymer {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for (pair, count) in self.pairs.iter() {
+            if *count == 0 {
+                continue;
+            }
+            writeln!(f, "{:?} = {}", pair, count);
+        }
+        Ok(())
     }
 }
 
@@ -95,11 +113,18 @@ fn get_input() -> Result<Polymer> {
 
 fn solve_p1() -> Result<()> {
     let mut polymer = get_input()?;
-    for _ in 0..10 {
+    for i in 0..3 {
+        if i == 2 {
+            dbg!(polymer.counts());
+            println!("{}", polymer);
+            unsafe {
+                DEBUG = true;
+            }
+        }
         polymer.iteration();
     }
-    // dbg!(&polymer.pairs); //2937
-    dbg!(polymer.max_diff()); //2937
+    dbg!(polymer.counts());
+    dbg!(polymer.max_diff());
 
     Ok(())
 }
