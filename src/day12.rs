@@ -75,7 +75,7 @@ fn solve_p1() -> Result<()> {
     Ok(())
 }
 
-pub fn solve_p2() -> Result<()> {
+fn solve_p2() -> Result<()> {
     let mut caves = get_input()?;
 
     let mut stack: Vec<(String, Option<String>, Vec<String>)> =

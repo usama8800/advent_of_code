@@ -43,7 +43,7 @@ fn solve_p1() -> Result<()> {
     Ok(())
 }
 
-pub fn solve_p2() -> Result<()> {
+fn solve_p2() -> Result<()> {
     let lines = get_input()?;
     let score_map = HashMap::from([('<', 4u64), ('{', 3), ('[', 2), ('(', 1)]);
     let end_map = HashMap::from([('<', '>'), ('{', '}'), ('[', ']'), ('(', ')')]);

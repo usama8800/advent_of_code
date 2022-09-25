@@ -53,7 +53,7 @@ fn solve_p1() -> Result<()> {
     Ok(())
 }
 
-pub fn solve_p2() -> Result<()> {
+fn solve_p2() -> Result<()> {
     let nums = get_input()?;
     let len = nums.get(0).ok_or_else(|| eyre!(""))?.len();
 

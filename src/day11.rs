@@ -190,7 +190,7 @@ fn solve_p1() -> Result<()> {
     Ok(())
 }
 
-pub fn solve_p2() -> Result<()> {
+fn solve_p2() -> Result<()> {
     let mut grid = get_input()?;
     let total_octopodes = grid.map.len() * grid.map[0].len();
 

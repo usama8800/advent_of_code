@@ -120,7 +120,7 @@ fn solve_p1() -> Result<()> {
     Ok(())
 }
 
-pub fn solve_p2() -> Result<()> {
+fn solve_p2() -> Result<()> {
     let (mut grid, commands) = get_input()?;
 
     for command in commands {

@@ -130,7 +130,7 @@ fn solve_p1() -> Result<()> {
     Ok(())
 }
 
-pub fn solve_p2() -> Result<()> {
+fn solve_p2() -> Result<()> {
     let (draws, mut boards) = get_input()?;
 
     for draw in draws {

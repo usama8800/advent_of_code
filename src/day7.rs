@@ -46,7 +46,7 @@ fn solve_p1() -> Result<()> {
     optimal(&input, |a, b| a.abs_diff(b))
 }
 
-pub fn solve_p2() -> Result<()> {
+fn solve_p2() -> Result<()> {
     let input = get_input()?;
     optimal(&input, |x: u32, y: u32| {
         let diff = x.abs_diff(y);

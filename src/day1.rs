@@ -22,7 +22,7 @@ fn solve_p1() -> Result<()> {
     Ok(())
 }
 
-pub fn solve_p2() -> Result<()> {
+fn solve_p2() -> Result<()> {
     let nums = get_input()?;
     let mut ret = 0;
     for x in nums.windows(4) {

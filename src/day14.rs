@@ -16,51 +16,49 @@ struct Pair(char, char);
 
 #[derive(Debug)]
 struct Polymer {
-    pairs: HashMap<Pair, u32>,
+    pairs: HashMap<Pair, u64>,
     insertions: HashMap<Pair, char>,
+    start: char,
+    end: char,
 }
 
 impl Polymer {
     fn iteration(&mut self) {
-        let mut inserts: Vec<(Pair, i32)> = Vec::new();
+        let mut inserts: Vec<(Pair, i64)> = Vec::new();
 
-        debug("".to_owned());
+        for (pair, count) in &self.pairs {
+            if let Some(x) = self.insertions.get(pair) {
+                let new_pair1 = Pair(pair.0, *x);
+                let new_pair2 = Pair(*x, pair.1);
+                // println!(
+                //     "{} {}{} to {}{}{}",
+                //     count, pair.0, pair.1, pair.0, x, pair.1
+                // );
+                inserts.push((*pair, -(*count as i64)));
+                inserts.push((new_pair1, *count as i64));
+                inserts.push((new_pair2, *count as i64));
+            }
+        }
+
         for (pair, count) in inserts {
             let curr = self.pairs.get(&pair).map_or(0, |v| *v);
-            debug(format!("{:?} (new count  {})", pair, (curr as i32 + count)));
-            self.pairs.insert(pair, (curr as i32 + count) as u32);
+            self.pairs.insert(pair, (curr as i64 + count) as u64);
         }
     }
 
     fn counts(&self) -> HashMap<char, u64> {
         let mut counts: HashMap<char, u64> = HashMap::new();
         for (pair, count) in self.pairs.iter() {
-            // println!("{:?} {}", pair, count);
             let curr = counts.get(&pair.0).map_or(0, |f| *f);
             counts.insert(pair.0, curr + *count as u64);
-            // println!(
-            //     "{} = {} + {} = {}",
-            //     pair.0,
-            //     count,
-            //     curr,
-            //     curr + *count as u64
-            // );
             let curr = counts.get(&pair.1).map_or(0, |f| *f);
             counts.insert(pair.1, curr + *count as u64);
-            // println!(
-            //     "{} = {} + {} = {}",
-            //     pair.1,
-            //     count,
-            //     curr,
-            //     curr + *count as u64
-            // );
         }
         for (ch, count) in counts.iter_mut() {
-            *count = if *count % 2 == 0 {
-                *count / 2u64
-            } else {
-                *count / 2u64 + 1
-            };
+            *count = *count / 2u64;
+            if self.start == *ch || self.end == *ch {
+                *count += 1;
+            }
         }
         counts
     }
@@ -69,6 +67,8 @@ impl Polymer {
         let counts = self.counts();
         let max = counts.values().max().unwrap();
         let min = counts.values().min().unwrap();
+        // dbg!(max);
+        // dbg!(min);
         max - min
     }
 }
@@ -95,10 +95,14 @@ fn get_input() -> Result<Polymer> {
         }
     });
 
-    let mut pairs: HashMap<Pair, u32> = HashMap::new();
+    let mut pairs: HashMap<Pair, u64> = HashMap::new();
     let line = lines.next().unwrap();
+    let start = line.chars().nth(0).unwrap();
+    let end = line.chars().rev().nth(0).unwrap();
     for chars in line.chars().zip(line.chars().skip(1)) {
-        pairs.insert(Pair(chars.0, chars.1), 1);
+        let pair = Pair(chars.0, chars.1);
+        let prev = pairs.get(&pair).unwrap_or(&0);
+        pairs.insert(pair, prev + 1);
     }
 
     let mut insertions: HashMap<Pair, char> = HashMap::new();
@@ -108,32 +112,39 @@ fn get_input() -> Result<Polymer> {
         insertions.insert(Pair(chars[0], chars[1]), splits[1].chars().next().unwrap());
     });
 
-    Ok(Polymer { pairs, insertions })
+    Ok(Polymer {
+        pairs,
+        insertions,
+        start,
+        end,
+    })
 }
 
 fn solve_p1() -> Result<()> {
     let mut polymer = get_input()?;
-    for i in 0..3 {
-        if i == 2 {
-            dbg!(polymer.counts());
-            println!("{}", polymer);
-            unsafe {
-                DEBUG = true;
-            }
-        }
+    // println!("{}", polymer);
+    for i in 0..10 {
         polymer.iteration();
+        // println!("{}", polymer);
     }
-    dbg!(polymer.counts());
+    let counts = polymer.counts();
+    // dbg!(&counts);
+    let sum: u64 = counts.values().sum();
+    // dbg!(sum);
     dbg!(polymer.max_diff());
 
     Ok(())
 }
 
-pub fn solve_p2() -> Result<()> {
+fn solve_p2() -> Result<()> {
     let mut polymer = get_input()?;
-    for _ in 0..40 {
+    for i in 0..40 {
         polymer.iteration();
     }
+    let counts = polymer.counts();
+    // dbg!(&counts);
+    let sum: u64 = counts.values().sum();
+    // dbg!(sum);
     dbg!(polymer.max_diff());
 
     Ok(())
@@ -141,7 +152,7 @@ pub fn solve_p2() -> Result<()> {
 
 pub fn solve() -> Result<()> {
     solve_p1();
-    // solve_p2();
+    solve_p2();
 
     Ok(())
 }
