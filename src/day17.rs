@@ -7,7 +7,7 @@ use std::{
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-struct Point(i16, i16);
+struct Point(i32, i32);
 
 impl Point {
     fn distance_to_point(&self, other: Self) -> u16 {
@@ -47,11 +47,11 @@ impl Rect {
         )
     }
 
-    fn width(&self) -> u16 {
+    fn width(&self) -> u32 {
         self.start.0.abs_diff(self.end.0) + 1
     }
 
-    fn height(&self) -> u16 {
+    fn height(&self) -> u32 {
         self.start.1.abs_diff(self.end.1) + 1
     }
 
@@ -82,71 +82,29 @@ fn get_input() -> Result<Rect> {
     })
 }
 
-fn solve_p1() -> Result<()> {
-    let target = get_input()?;
-    dbg!(&target);
-
-    let mut read_line = String::new();
-
-    let mut guess = Point(0, 0);
-    let mut prev_guess = guess.clone();
-    let mut prev2_guess = guess.clone();
-    let mut prev3_guess = guess.clone();
-    let mut velocity = guess.clone();
+fn simulate(velocity: &Point, target: &Rect) -> Option<i32> {
+    // println!("Simulating {:?}", velocity);
+    let mut max_y = i32::MIN;
+    let mut velocity = velocity.clone();
     let mut position = Point(0, 0);
-    println!("{:?}", position);
     loop {
-        let mut reset = false;
         let prev_position = position.clone();
         position += velocity;
-        println!("{:?}\tafter adding {:?}", position, velocity);
+        // println!("{:?}\tafter adding {:?}", position, velocity);
 
         if target.contains(position) {
-            println!("HIT!!");
-            prev3_guess = prev2_guess;
-            prev2_guess = prev_guess;
-            prev_guess = guess;
-            guess.1 += 1;
-            reset = true;
+            // println!("HIT!!\n");
+            return Some(max_y);
         } else if velocity.1 < 0
-            && target.start.1.abs_diff(position.1) > target.start.1.abs_diff(prev_position.1)
+            // && target.start.1.abs_diff(position.1) > target.start.1.abs_diff(prev_position.1)
+            && position.1 < target.start.1
         {
-            prev3_guess = prev2_guess;
-            prev2_guess = prev_guess;
-            prev_guess = guess;
-            if prev_position.1 < target.start.1 && position.1 > target.end.1
-                || prev_position.1 > target.start.1 && position.1 < target.end.1
-            {
-                println!("Crossed y in one step");
-                guess.1 -= 1;
-            } else if prev_position.0 < target.start.0 && position.0 > target.end.0 {
-                println!("Crossed x in one step");
-                guess.1 += 1;
-            } else if position.0 < target.start.0 {
-                println!("Left of start");
-                guess.0 += 1;
-            } else if position.0 > target.end.0 {
-                println!("Right of end");
-                guess.0 -= 1;
-            } else {
-                println!("In the middle");
-                guess.0 += 1;
-                guess.1 += 1;
-            }
-            reset = true;
+            // println!("");
+            return None;
         }
 
-        if reset {
-            println!("\n\nNew Guess {:?}", guess);
-            if guess == prev2_guess {
-                break;
-            }
-
-            std::io::stdin().read_line(&mut read_line).unwrap();
-            velocity = guess.clone();
-            position = Point(0, 0);
-            println!("{:?}", position);
-            continue;
+        if position.1 > max_y {
+            max_y = position.1;
         }
 
         if velocity.0 > 0 {
@@ -157,20 +115,83 @@ fn solve_p1() -> Result<()> {
         }
         velocity.1 -= 1;
     }
-    dbg!(prev3_guess);
+}
 
+fn solve_p1() -> Result<()> {
+    let target = get_input()?;
+    // dbg!(&target);
+
+    let mut read_line = String::new();
+
+    let min_x_landing_inside = ((1.0 + 8.0 * target.start.0 as f32).sqrt() / 2.0) as i32;
+    let max_x_landing_inside = ((-1.0 + (1.0 + 8.0 * target.end.0 as f32).sqrt()) / 2.0) as i32;
+
+    let mut max_y = 0;
+    let mut consecutive_misses = 0;
+    for y in 0.. {
+        let mut hit = false;
+        for x in min_x_landing_inside..=max_x_landing_inside {
+            if let Some(max) = simulate(&Point(x, y), &target) {
+                // println!("({}, {}) hit\tmax_y = {}", x, y, max);
+                hit = true;
+                consecutive_misses = 0;
+                if max > max_y {
+                    max_y = max;
+                }
+                break;
+            } else {
+                // println!("({}, {}) missed", x, y);
+            }
+        }
+        if !hit {
+            consecutive_misses += 1;
+        }
+        if consecutive_misses > 100 {
+            break;
+        }
+    }
+    dbg!(max_y);
     Ok(())
 }
 
 fn solve_p2() -> Result<()> {
-    let input = get_input()?;
+    let target = get_input()?;
+    // dbg!(&target);
 
+    let mut read_line = String::new();
+
+    let min_x_landing_inside = ((1.0 + 8.0 * target.start.0 as f32).sqrt() / 2.0) as i32;
+    let max_x_inside = target.end.0;
+    let min_y_inside = target.start.1;
+
+    let mut ways = 0;
+    let mut consecutive_misses = 0;
+    for y in min_y_inside.. {
+        let mut hit = false;
+        for x in min_x_landing_inside..=max_x_inside {
+            if let Some(_) = simulate(&Point(x, y), &target) {
+                // println!("({}, {}) hit", x, y);
+                hit = true;
+                consecutive_misses = 0;
+                ways += 1;
+            } else {
+                // println!("({}, {}) missed", x, y);
+            }
+        }
+        if !hit {
+            consecutive_misses += 1;
+        }
+        if consecutive_misses > 100 {
+            break;
+        }
+    }
+    dbg!(ways);
     Ok(())
 }
 
 pub fn solve() -> Result<()> {
     solve_p1();
-    // solve_p2();
+    solve_p2();
 
     Ok(())
 }
