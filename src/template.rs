@@ -11,7 +11,7 @@ fn get_input() -> Result<Vec<u32>> {
         }
     });
 
-    Ok(lines.filter_map(|v| v.parse().ok()).collect())
+    Ok(Vec::new())
 }
 
 fn solve_p1() -> Result<()> {
