@@ -29,7 +29,7 @@ fn solve_p2() -> Result<()> {
 
 pub fn solve() -> Result<()> {
     solve_p1();
-    solve_p2();
+    // solve_p2();
 
     Ok(())
 }
