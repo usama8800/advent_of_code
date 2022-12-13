@@ -2,7 +2,7 @@ use color_eyre::eyre::{eyre, Result};
 use std::fs;
 
 fn get_input() -> Result<Vec<String>> {
-    let contents = fs::read_to_string("inputs/day3.txt").expect("");
+    let contents = fs::read_to_string("inputs/y21d3.txt").expect("");
     let splits = contents.split('\n');
 
     Ok(splits

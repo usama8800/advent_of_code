@@ -64,7 +64,7 @@ impl Rect {
 }
 
 fn get_input() -> Result<Rect> {
-    let contents = fs::read_to_string("inputs/day17.txt").expect("");
+    let contents = fs::read_to_string("inputs/y21d17.txt").expect("");
     let mut lines = contents.split('\n').filter_map(|v| {
         if v.len() == 0 || v.chars().nth(0) == Some('#') {
             None

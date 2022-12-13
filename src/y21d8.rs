@@ -123,7 +123,7 @@ impl Digit {
 }
 
 fn get_input() -> Result<Vec<Vec<String>>> {
-    let contents = fs::read_to_string("inputs/day8.txt").expect("");
+    let contents = fs::read_to_string("inputs/y21d8.txt").expect("");
     let lines = contents.split('\n').filter_map(|v| {
         if v.len() == 0 || v.chars().nth(0) == Some('#') {
             None

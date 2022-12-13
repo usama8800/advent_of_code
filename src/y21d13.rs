@@ -75,7 +75,7 @@ impl Display for Grid {
 }
 
 fn get_input() -> Result<(Grid, Vec<Command>)> {
-    let contents = fs::read_to_string("inputs/day13.txt").expect("");
+    let contents = fs::read_to_string("inputs/y21d13.txt").expect("");
     let lines = contents.split('\n').filter_map(|v| {
         if v.len() == 0 || v.chars().nth(0) == Some('#') {
             None

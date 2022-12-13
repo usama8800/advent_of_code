@@ -162,7 +162,7 @@ impl Packet {
 }
 
 fn get_input() -> Result<Packet> {
-    let contents = fs::read_to_string("inputs/day16.txt").expect("");
+    let contents = fs::read_to_string("inputs/y21d16.txt").expect("");
     let mut lines = contents.split('\n').filter_map(|v| {
         if v.len() == 0 || v.chars().nth(0) == Some('#') {
             None

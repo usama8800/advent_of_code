@@ -2,7 +2,7 @@ use color_eyre::eyre::{eyre, Result};
 use std::fs;
 
 fn get_input() -> Result<Vec<u32>> {
-    let contents = fs::read_to_string("inputs/dayX.txt").expect("");
+    let contents = fs::read_to_string("inputs/y22dX.txt").expect("");
     let lines = contents.split('\n').filter_map(|v| {
         if v.len() == 0 || v.chars().nth(0) == Some('#') {
             None

@@ -85,7 +85,7 @@ impl Bingo {
 }
 
 fn get_input() -> Result<(Vec<u32>, Vec<Bingo>)> {
-    let contents = fs::read_to_string("inputs/day4.txt").expect("");
+    let contents = fs::read_to_string("inputs/y21d4.txt").expect("");
     let mut splits = contents
         .split('\n')
         .filter_map(|v| if v.len() == 0 { None } else { Some(v) });

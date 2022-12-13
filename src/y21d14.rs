@@ -86,7 +86,7 @@ impl Display for Polymer {
 }
 
 fn get_input() -> Result<Polymer> {
-    let contents = fs::read_to_string("inputs/day14.txt").expect("");
+    let contents = fs::read_to_string("inputs/y21d14.txt").expect("");
     let mut lines = contents.split('\n').filter_map(|v| {
         if v.len() == 0 || v.chars().nth(0) == Some('#') {
             None
